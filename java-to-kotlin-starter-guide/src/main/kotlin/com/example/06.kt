@@ -24,7 +24,7 @@ fun main() {
 
 }
 
-fun test01() {
+private fun test01() {
     for (i in 1..3) {
         println(i)
     }

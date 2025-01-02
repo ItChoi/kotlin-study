@@ -59,7 +59,7 @@ class Person(
         return this.age >= 20
     }
 
-    val isAduit: Boolean
+    val isAduit123: Boolean
         get() = this.age >= 20
 
     val isAduit1: Boolean
