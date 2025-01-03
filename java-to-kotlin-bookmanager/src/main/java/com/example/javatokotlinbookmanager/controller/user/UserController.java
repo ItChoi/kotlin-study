@@ -3,7 +3,7 @@ package com.example.javatokotlinbookmanager.controller.user;
 import com.example.javatokotlinbookmanager.dto.user.request.UserCreateRequest;
 import com.example.javatokotlinbookmanager.dto.user.request.UserUpdateRequest;
 import com.example.javatokotlinbookmanager.dto.user.response.UserResponse;
-import com.example.javatokotlinbookmanager.service.user.UserService;
+import com.example.javatokotlinbookmanager.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -30,7 +30,7 @@ public class BookService {
 
   @Transactional
   public void saveBook(BookRequest request) {
-    Book newBook = new Book(request.getName());
+    Book newBook = new Book(request.getName(), null);
     bookRepository.save(newBook);
   }
 
@@ -39,6 +39,7 @@ public class BookService {
     Book book = bookRepository.findByName(request.getBookName()).orElseThrow(IllegalArgumentException::new);
     if (userLoanHistoryRepository.findByBookNameAndIsReturn(request.getBookName(), false) != null) {
       throw new IllegalArgumentException("진작 대출되어 있는 책입니다");
+
     }
 
     User user = userRepository.findByName(request.getUserName()).orElseThrow(IllegalArgumentException::new);

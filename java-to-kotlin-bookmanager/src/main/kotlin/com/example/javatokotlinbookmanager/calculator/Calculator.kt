@@ -1,4 +1,4 @@
-package com.example.calculator
+package com.example.javatokotlinbookmanager.calculator
 
 class Calculator(
     var number: Int
