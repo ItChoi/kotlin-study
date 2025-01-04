@@ -4,7 +4,6 @@ import com.example.javatokotlinbookmanager.domain.user.User
 import com.example.javatokotlinbookmanager.domain.user.UserRepository
 import com.example.javatokotlinbookmanager.dto.user.request.UserCreateRequest
 import com.example.javatokotlinbookmanager.dto.user.request.UserUpdateRequest
-import com.example.javatokotlinbookmanager.service.UserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName

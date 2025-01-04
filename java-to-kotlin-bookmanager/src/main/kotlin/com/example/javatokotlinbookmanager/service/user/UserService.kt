@@ -1,10 +1,13 @@
-package com.example.javatokotlinbookmanager.service
+package com.example.javatokotlinbookmanager.service.user
 
 import com.example.javatokotlinbookmanager.domain.user.User
 import com.example.javatokotlinbookmanager.domain.user.UserRepository
 import com.example.javatokotlinbookmanager.dto.user.request.UserCreateRequest
 import com.example.javatokotlinbookmanager.dto.user.request.UserUpdateRequest
 import com.example.javatokotlinbookmanager.dto.user.response.UserResponse
+import com.example.javatokotlinbookmanager.util.fail
+import com.example.javatokotlinbookmanager.util.findByIdOrThrow
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
@@ -30,9 +33,11 @@ class UserService(
 
     @Transactional
     fun updateUserName(request: UserUpdateRequest): Unit {
-        val user = userRepository.findById(request.id)
+        //val user = userRepository.findByIdOrNull(request.id) ?: fail()
+        /*val user = userRepository.findById(request.id)
             //.orElseThrow({ IllegalArgumentException() })
-            .orElseThrow(::IllegalArgumentException)
+            .orElseThrow(::IllegalArgumentException)*/
+        val user = userRepository.findByIdOrThrow(request.id)
         user.updateName(request.name)
     }
 
@@ -40,7 +45,9 @@ class UserService(
     fun deleteUser(name: String): Unit {
         val user = userRepository.findByName(name)
             //.orElseThrow({ IllegalArgumentException() })
-            .orElseThrow(::IllegalArgumentException)
+            //.orElseThrow(::IllegalArgumentException)
+            //?: throw IllegalArgumentException()
+            ?: fail()
         userRepository.delete(user)
     }
 
