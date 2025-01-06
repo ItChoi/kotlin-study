@@ -2,19 +2,21 @@ package com.example.javatokotlinbookmanager.service.user
 
 import com.example.javatokotlinbookmanager.domain.user.User
 import com.example.javatokotlinbookmanager.domain.user.UserRepository
+import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanHistoryRepository
+import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanStatus
 import com.example.javatokotlinbookmanager.dto.user.request.UserCreateRequest
 import com.example.javatokotlinbookmanager.dto.user.request.UserUpdateRequest
+import com.example.javatokotlinbookmanager.dto.user.response.BookHistoryResponse
+import com.example.javatokotlinbookmanager.dto.user.response.UserLoanHistoryResponse
 import com.example.javatokotlinbookmanager.dto.user.response.UserResponse
 import com.example.javatokotlinbookmanager.util.fail
 import com.example.javatokotlinbookmanager.util.findByIdOrThrow
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.IllegalArgumentException
 
 @Service
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository, private val userLoanHistoryRepository: UserLoanHistoryRepository
 ) {
 
     @Transactional
@@ -51,6 +53,33 @@ class UserService(
             //?: throw IllegalArgumentException()
             ?: fail()
         userRepository.delete(user)
+    }
+
+    @Transactional(readOnly = true)
+    fun getUserLoanHistories(): List<UserLoanHistoryResponse> {
+        //return userRepository.findAll().map { user ->
+        /*return userRepository.findAllWithHistories().map { user ->
+            UserLoanHistoryResponse(
+                name = user.name,
+                books = user.userLoanHistories.map { history ->
+                    BookHistoryResponse(
+                        name = history.bookName,
+                        isReturn =  history.status == UserLoanStatus.RETURNED
+                    )
+                }
+            )
+        }*/
+        // 정적 팩토리 메서드 활용
+        /*return userRepository.findAllWithHistories().map { user ->
+            UserLoanHistoryResponse(
+                name = user.name,
+                *//*books = user.userLoanHistories.map { history ->
+                    BookHistoryResponse.of(history)
+                }*//*
+                books = user.userLoanHistories.map(BookHistoryResponse::of),
+            )
+        }*/
+        return userRepository.findAllWithHistories().map(UserLoanHistoryResponse::of)
     }
 
 }

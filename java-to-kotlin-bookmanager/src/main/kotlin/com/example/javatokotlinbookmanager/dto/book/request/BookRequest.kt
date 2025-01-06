@@ -1,3 +1,8 @@
 package com.example.javatokotlinbookmanager.dto.book.request
 
-data class BookRequest(val name: String)
+import com.example.javatokotlinbookmanager.domain.book.BookType
+
+data class BookRequest(
+    val name: String,
+    val type: BookType
+)
