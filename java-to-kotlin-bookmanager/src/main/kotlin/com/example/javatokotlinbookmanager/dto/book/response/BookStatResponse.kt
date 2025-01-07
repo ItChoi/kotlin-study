@@ -4,9 +4,10 @@ import com.example.javatokotlinbookmanager.domain.book.BookType
 
 data class BookStatResponse(
     val type: BookType,
-    var count: Int,
+    val count: Long,
+//    var count: Int,
 ) {
-    fun plusOne() {
-        count++
-    }
+//    fun plusOne() {
+//        count++
+//    }
 }

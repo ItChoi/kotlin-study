@@ -1,7 +1,6 @@
 package com.example.javatokotlinbookmanager.domain.book
 
-import jakarta.persistence.*
-import java.lang.IllegalArgumentException
+import javax.persistence.*
 
 @Entity
 class Book(

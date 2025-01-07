@@ -9,6 +9,8 @@ import com.example.javatokotlinbookmanager.dto.book.request.BookLoanRequest
 import com.example.javatokotlinbookmanager.dto.book.request.BookRequest
 import com.example.javatokotlinbookmanager.dto.book.request.BookReturnRequest
 import com.example.javatokotlinbookmanager.dto.book.response.BookStatResponse
+import com.example.javatokotlinbookmanager.repository.book.BookQuerydslRepository
+import com.example.javatokotlinbookmanager.repository.user.loanhistory.UserLoanHistoryQuerydslRepository
 import com.example.javatokotlinbookmanager.util.fail
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class BookService(
     private val bookRepository: BookRepository,
+    private val bookQuerydslRepository: BookQuerydslRepository,
     private val userRepository: UserRepository,
-    private val userLoanHistoryRepository: UserLoanHistoryRepository,
+    //private val userLoanHistoryRepository: UserLoanHistoryRepository,
+    private val userLoanHistoryQuerydslRepository: UserLoanHistoryQuerydslRepository,
 ) {
 
     @Transactional
@@ -31,7 +35,8 @@ class BookService(
         //val book = bookRepository.findByName(request.bookName).orElseThrow(::IllegalArgumentException)
         //val book = bookRepository.findByName(request.bookName) ?: throw IllegalArgumentException()
         val book = bookRepository.findByName(request.bookName) ?: fail()
-        if (userLoanHistoryRepository.findByBookNameAndStatus(request.bookName, UserLoanStatus.LOANED) != null) {
+        //if (userLoanHistoryRepository.findByBookNameAndStatus(request.bookName, UserLoanStatus.LOANED) != null) {
+        if (userLoanHistoryQuerydslRepository.find(request.bookName, UserLoanStatus.LOANED) != null) {
             throw IllegalArgumentException("진작 대출되어 있는 책입니다")
         }
 
@@ -51,31 +56,40 @@ class BookService(
 
     @Transactional(readOnly = true)
     fun countLoadedBook(): Int {
-        return userLoanHistoryRepository.findAllByStatus(UserLoanStatus.LOANED).size
+        //return userLoanHistoryRepository.findAllByStatus(UserLoanStatus.LOANED).size
+        //return userLoanHistoryRepository.countByStatus(UserLoanStatus.LOANED).toInt()
+        return userLoanHistoryQuerydslRepository.count(UserLoanStatus.LOANED).toInt()
     }
 
     @Transactional(readOnly = true)
     fun getBookStatistics(): List<BookStatResponse> {
-        val results = mutableListOf<BookStatResponse>()
-        val books = bookRepository.findAll()
-        /*for (book in books) {
-            val targetDto = results.firstOrNull { dto -> book.type == dto.type }
-            if (targetDto == null) {
-                results.add(BookStatResponse(book.type, 1))
-            } else {
-                targetDto.plusOne()
-            }
-        }*/
-        // 코틀린을 활용한 리팩토링
-        for (book in books) {
-            // 존재하는 경우에만 plusOne() 실행
-            // null인 경우 elvis 연산자를 통해 add
-            // 아래가 깔끔해졌지만, 좋은 코드라고 할 순 없다.
-            results.firstOrNull { dto -> book.type == dto.type }?.plusOne()
-                ?: results.add(BookStatResponse(book.type, 1))
-        }
+//        val results = mutableListOf<BookStatResponse>()
+//        val books = bookRepository.findAll()
+//        /*for (book in books) {
+//            val targetDto = results.firstOrNull { dto -> book.type == dto.type }
+//            if (targetDto == null) {
+//                results.add(BookStatResponse(book.type, 1))
+//            } else {
+//                targetDto.plusOne()
+//            }
+//        }*/
+//        // 코틀린을 활용한 리팩토링
+//        for (book in books) {
+//            // 존재하는 경우에만 plusOne() 실행
+//            // null인 경우 elvis 연산자를 통해 add
+//            // 아래가 깔끔해졌지만, 좋은 코드라고 할 순 없다.
+//            results.firstOrNull { dto -> book.type == dto.type }?.plusOne()
+//                ?: results.add(BookStatResponse(book.type, 1))
+//        }
+//
+//        return results
 
-        return results
+        /*return bookRepository.findAll()
+            .groupBy { book -> book.type }
+            .map { (type, books) -> BookStatResponse(type, books.size) }*/
+
+        //return bookRepository.getStats()
+        return bookQuerydslRepository.getStats()
     }
 
 }

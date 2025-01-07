@@ -1,7 +1,7 @@
 package com.example.javatokotlinbookmanager.domain.user.loanhistory
 
 import com.example.javatokotlinbookmanager.domain.user.User
-import jakarta.persistence.*
+import javax.persistence.*
 
 @Entity
 class UserLoanHistory(

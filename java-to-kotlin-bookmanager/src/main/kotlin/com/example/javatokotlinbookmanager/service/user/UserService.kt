@@ -1,5 +1,8 @@
 package com.example.javatokotlinbookmanager.service.user
 
+import com.example.javatokotlinbookmanager.domain.book.Book
+import com.example.javatokotlinbookmanager.domain.book.BookRepository
+import com.example.javatokotlinbookmanager.domain.book.BookType
 import com.example.javatokotlinbookmanager.domain.user.User
 import com.example.javatokotlinbookmanager.domain.user.UserRepository
 import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanHistoryRepository
@@ -16,8 +19,22 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
-    private val userRepository: UserRepository, private val userLoanHistoryRepository: UserLoanHistoryRepository
+    private val userRepository: UserRepository, private val userLoanHistoryRepository: UserLoanHistoryRepository,
+    private val bookRepository: BookRepository
 ) {
+
+    @Transactional
+    fun saveUserAndLoanTwoBooks() {
+        val newUser = User("A", 123)
+        val books = bookRepository.saveAll(
+            listOf(
+                Book("책1", BookType.COMPUTER),
+                Book("책2", BookType.COMPUTER),
+            )
+        )
+        books.forEach { book -> newUser.loanBook(book) }
+        userRepository.save(newUser)
+    }
 
     @Transactional
     fun saveUser(request: UserCreateRequest) {

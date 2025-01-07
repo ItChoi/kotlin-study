@@ -2,8 +2,13 @@ package com.example.javatokotlinbookmanager.domain.user
 
 import com.example.javatokotlinbookmanager.domain.book.Book
 import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanHistory
-import jakarta.persistence.*
-import java.lang.IllegalArgumentException
+import javax.persistence.CascadeType
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.OneToMany
+import javax.persistence.Table
 
 @Entity
 @Table(name = "`user`")

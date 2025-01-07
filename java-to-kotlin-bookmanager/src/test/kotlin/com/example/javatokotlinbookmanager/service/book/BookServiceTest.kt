@@ -11,6 +11,7 @@ import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanStatu
 import com.example.javatokotlinbookmanager.dto.book.request.BookLoanRequest
 import com.example.javatokotlinbookmanager.dto.book.request.BookRequest
 import com.example.javatokotlinbookmanager.dto.book.request.BookReturnRequest
+import com.example.javatokotlinbookmanager.dto.book.response.BookStatResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
@@ -97,6 +98,60 @@ class BookServiceTest @Autowired constructor(
         val results = userLoanHistoryRepository.findAll()
         assertThat(results).hasSize(1)
         assertThat(results[0].status).isEqualTo(UserLoanStatus.RETURNED)
+    }
+
+    @Test
+    @DisplayName("책 대여 권수를 정상 확인한다")
+    fun countLoanedBookTest(): Unit {
+        //given
+        val savedUser = userRepository.save(User("최태현", null))
+        userLoanHistoryRepository.saveAll(
+            listOf(
+                UserLoanHistory.fixture(savedUser, "A"),
+                UserLoanHistory.fixture(savedUser, "B", UserLoanStatus.RETURNED),
+                UserLoanHistory.fixture(savedUser, "C", UserLoanStatus.RETURNED),
+            )
+        )
+
+        //when
+        val result = bookService.countLoadedBook()
+
+        //then
+        assertThat(result).isEqualTo(1)
+    }
+
+    @Test
+    @DisplayName("분야별 책 권수를 정상 확인한다")
+    fun getBookStatisticsTest() {
+        //given
+        bookRepository.saveAll(
+            listOf(
+                Book("A", BookType.COMPUTER),
+                Book("B", BookType.COMPUTER),
+                Book("C", BookType.SCIENCE),
+            )
+        )
+
+        //when
+        val results = bookService.getBookStatistics()
+
+        //then
+        assertThat(results).hasSize(2)
+        //val computerDto = results.first{ result -> result.type == BookType.COMPUTER}
+        //assertThat(computerDto.count).isEqualTo(2)
+        assertCount(results, BookType.COMPUTER, 2L)
+
+        //val scienceDto = results.first{ result -> result.type == BookType.SCIENCE}
+        //assertThat(scienceDto.count).isEqualTo(1)
+        assertCount(results, BookType.SCIENCE, 1L)
+    }
+
+    private fun assertCount(
+        results: List<BookStatResponse>,
+        type: BookType,
+        count: Long
+    ) {
+        assertThat(results.first() { result -> result.type == type }.count).isEqualTo(count)
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.javatokotlinbookmanager.service.user
 
+import com.example.CleaningSpringBootTest
 import com.example.javatokotlinbookmanager.domain.user.User
 import com.example.javatokotlinbookmanager.domain.user.UserRepository
 import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanHistory
@@ -7,6 +8,7 @@ import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanHisto
 import com.example.javatokotlinbookmanager.domain.user.loanhistory.UserLoanStatus
 import com.example.javatokotlinbookmanager.dto.user.request.UserCreateRequest
 import com.example.javatokotlinbookmanager.dto.user.request.UserUpdateRequest
+import com.example.javatokotlinbookmanager.util.TxHelper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
@@ -19,12 +21,39 @@ class UserServiceTest @Autowired constructor(
     private val userRepository: UserRepository,
     private val userService: UserService,
     private val userLoanHistoryRepository: UserLoanHistoryRepository,
-) {
+    private val txHelper: TxHelper,
+) : CleaningSpringBootTest() {
 
-    @AfterEach
-    fun clean() {
-        //println("CLEAN 시작")
-        userRepository.deleteAll()
+//    @AfterEach
+//    fun clean() {
+//        //println("CLEAN 시작")
+//        userRepository.deleteAll()
+//    }
+
+    @Test
+    @DisplayName("유저 1명과 책 2권을 저장하고 대출한다")
+    fun tempTest() {
+        //given
+        //when
+        userService.saveUserAndLoanTwoBooks()
+
+        //then
+        val users = userRepository.findAll()
+        assertThat(users).hasSize(1)
+        // assertThat(users[0].userLoanHistories).hasSize(2)
+
+        // 방법2
+        val histories = userLoanHistoryRepository.findAll()
+        assertThat(histories).hasSize(2)
+        assertThat(histories[0].user.id).isEqualTo(users[0].id)
+
+
+        // 방법4
+        txHelper.exec {
+            val users = userRepository.findAll()
+            assertThat(users).hasSize(1)
+            // assertThat(users[0].userLoanHistories).hasSize(2)
+        }
     }
 
     @Test
