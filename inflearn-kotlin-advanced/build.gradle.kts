@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.7"
+    id("me.champeau.jmh") version "0.7.0"
 }
 
 group = "com.example"
@@ -34,4 +35,11 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+jmh {
+    threads = 1
+    fork = 1
+    warmupIterations = 1
+    iterations = 1
 }
